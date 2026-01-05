@@ -1,4 +1,4 @@
-# Bark Notification for [Claude Code](https://docs.anthropic.com/en/docs/claude-code)/[Codex CLI](https://github.com/openai/codex)/[OpenCode](https://opencode.ai)
+# Bark Notification for [Claude Code](https://code.claude.com/docs/en/overview)/[Codex CLI](https://github.com/openai/codex)/[OpenCode](https://opencode.ai)
 
 Send push notifications to your iOS device via [Bark](https://github.com/Finb/Bark) when your AI coding agents complete tasks.
 
