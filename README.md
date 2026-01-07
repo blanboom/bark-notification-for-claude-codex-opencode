@@ -76,26 +76,36 @@ OpenCode uses a plugin-based approach. Create a file at `~/.config/opencode/plug
 ```typescript
 import type { Plugin } from "@opencode-ai/plugin";
 
-const NOTIFY_SCRIPT = "/path/to/notify_claude_codex_bark.py";
+const NOTIFY_SCRIPT = "/Users/blanboom/.codex/notify_claude_codex_bark.py";
 
-const plugin: Plugin = async ({ $ }) => {
+const plugin: Plugin = async ({ client, $ }) => {
+  const notify = (type: string, message: string) => {
+    const payload = JSON.stringify({ title: "OpenCode", type, message });
+    $`echo ${payload} | python3 ${NOTIFY_SCRIPT}`.quiet().catch(() => {});
+  };
+
   return {
     event: async ({ event }) => {
       if (event.type === "session.idle") {
-        const payload = JSON.stringify({
-          event: "session.idle",
-          type: "session.idle",
-          title: "OpenCode",
-          message: "Task completed",
-        });
+        const { sessionID } = event.properties;
+        const sessions = await client.session.list({ limit: 50 });
+        const session = sessions.data?.find((s: { id: string }) => s.id === sessionID);
+        if (!session || session.parentID) return;
 
-        $`echo ${payload} | python3 ${NOTIFY_SCRIPT}`.quiet().catch(() => {});
+        notify("session.idle", session.title || "Task completed");
+      }
+
+      if (event.type === "permission.asked") {
+        const { permission, patterns } = event.properties;
+        const detail = patterns.length ? `: ${patterns.join(", ")}` : "";
+        notify("permission.asked", `${permission}${detail}`);
       }
     },
   };
 };
 
 export default plugin;
+
 ```
 
 ## How It Works
