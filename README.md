@@ -76,7 +76,7 @@ OpenCode uses a plugin-based approach. Create a file at `~/.config/opencode/plug
 ```typescript
 import type { Plugin } from "@opencode-ai/plugin";
 
-const NOTIFY_SCRIPT = "/Users/blanboom/.codex/notify_claude_codex_bark.py";
+const NOTIFY_SCRIPT = "/path/to/notify_claude_codex_bark.py";
 
 const plugin: Plugin = async ({ client, $ }) => {
   const notify = (type: string, message: string) => {
